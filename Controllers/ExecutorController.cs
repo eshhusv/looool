@@ -5,6 +5,8 @@ using System.Linq;
 
 namespace looool.Controllers
 {
+    [ApiController]
+    [Route("api/[controller]")]
     public class ExecutorController : ControllerBase
     {
         private DataContext db;
@@ -25,10 +27,27 @@ namespace looool.Controllers
         [HttpPost]
         public void SaveExecutor([FromBody] Executor executor)
         {
-            db.Executors.Add(executor);
-            db.SaveChanges();
+            if (executor != null)
+            {
+                db.Executors.Add(executor);
+                db.SaveChanges();
+            }
         }
         [HttpPut]
+        public async Task<ActionResult<Executor>> Put(Executor executor)
+        {
+            if (executor == null)
+            {
+                return BadRequest();
+            }
+            if (!db.Executors.Any(x => x.ExecutorId == executor.ExecutorId))
+            {
+                return NotFound();
+            }
+            db.Update(executor);
+            await db.SaveChangesAsync();
+            return Ok(executor);
+        }
         public void UpdateExecutor([FromBody] Executor executor)
         {
             db.Executors.Update(executor);

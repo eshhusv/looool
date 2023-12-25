@@ -14,6 +14,4 @@ public partial class Customer
     public string? PhoneNumber { get; set; }
 
     public string? Email { get; set; }
-
-    public virtual Assignment? Task { get; set; }
 }

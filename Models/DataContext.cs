@@ -13,7 +13,10 @@ public partial class DataContext : DbContext
     public DataContext(DbContextOptions<DataContext> options)
         : base(options)
     {
+        Database.EnsureCreated();
     }
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+       => optionsBuilder.UseSqlServer("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=Web-workshop;Integrated Security=True;Encrypt=False");
 
     public virtual DbSet<Customer> Customers { get; set; }
 
@@ -30,7 +33,6 @@ public partial class DataContext : DbContext
             entity.HasKey(e => e.CustomerId).HasName("PK__Customer__CD65CB8529CD5970");
 
             entity.Property(e => e.CustomerId)
-                .ValueGeneratedNever()
                 .HasColumnName("customer_id");
             entity.Property(e => e.Email)
                 .HasMaxLength(255)
@@ -53,7 +55,6 @@ public partial class DataContext : DbContext
             entity.ToTable("Executor");
 
             entity.Property(e => e.ExecutorId)
-                .ValueGeneratedNever()
                 .HasColumnName("executor_id");
             entity.Property(e => e.Email)
                 .HasMaxLength(255)
@@ -74,7 +75,6 @@ public partial class DataContext : DbContext
             entity.HasKey(e => e.ProjectId).HasName("PK__Projects__BC799E1FB3E2E519");
 
             entity.Property(e => e.ProjectId)
-                .ValueGeneratedNever()
                 .HasColumnName("project_id");
             entity.Property(e => e.PeriodOfExecution).HasColumnName("period_of_execution");
             entity.Property(e => e.Price).HasColumnName("price");
@@ -104,16 +104,10 @@ public partial class DataContext : DbContext
             entity.ToTable("Task");
 
             entity.Property(e => e.TaskId)
-                .ValueGeneratedNever()
                 .HasColumnName("task_id");
             entity.Property(e => e.TaskName)
                 .HasMaxLength(255)
                 .HasColumnName("task_name");
-
-            entity.HasOne(d => d.TaskNavigation).WithOne(p => p.Task)
-                .HasForeignKey<Assignment>(d => d.TaskId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Task__task_id__2C3393D0");
         });
 
         OnModelCreatingPartial(modelBuilder);

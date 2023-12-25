@@ -1,10 +1,10 @@
 ﻿using looool.Models;
 using Microsoft.AspNetCore.Mvc;
-using System.Diagnostics;
-using System.Linq;
 
 namespace looool.Controllers
 {
+    [ApiController]
+    [Route("api/[controller]")]
     public class AssignmentController : ControllerBase
     {
         private DataContext db;
@@ -25,14 +25,26 @@ namespace looool.Controllers
         [HttpPost]
         public void SaveAssignment([FromBody] Assignment assignment)
         {
-            db.Assignments.Add(assignment);
-            db.SaveChanges();
+            if (assignment != null)
+            {
+                db.Assignments.Add(assignment);
+                db.SaveChanges();
+            }
         }
         [HttpPut]
-        public void UpdateAssignment([FromBody] Assignment assignment)
+        public async Task<ActionResult<Assignment>> Put(Assignment assignment)
         {
-            db.Assignments.Update(assignment);
-            db.SaveChanges();
+            if (assignment == null)
+            {
+                return BadRequest();
+            }
+            if (!db.Assignments.Any(x => x.TaskId == assignment.TaskId))
+            {
+                return NotFound();
+            }
+            db.Update(assignment);
+            await db.SaveChangesAsync();
+            return Ok(assignment);
         }
         [HttpDelete("{id}")]
         public void DeleteAssignment(long id)

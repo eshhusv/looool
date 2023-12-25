@@ -1,10 +1,9 @@
 using looool.Models;
 using Microsoft.AspNetCore.Mvc;
-using System.Diagnostics;
-using System.Linq;
 
 namespace looool.Controllers
 {
+    [ApiController]
     [Route("api/[controller]")]
     public class CustomerController : ControllerBase
     {
@@ -26,14 +25,26 @@ namespace looool.Controllers
         [HttpPost]
         public void SaveCustomers([FromBody] Customer customer)
         {
-            db.Customers.Add(customer);
-            db.SaveChanges();
+            if(customer != null)
+            {
+                db.Customers.Add(customer);
+                db.SaveChanges();
+            }
         }
         [HttpPut]
-        public void UpdateCustomers([FromBody] Customer customer)
+        public async Task<ActionResult<Customer>> Put(Customer customer)
         {
-            db.Customers.Update(customer);
-            db.SaveChanges();
+            if (customer == null)
+            {
+                return BadRequest();
+            }
+            if (!db.Customers.Any(x => x.CustomerId == customer.CustomerId))
+            {
+                return NotFound();
+            }
+            db.Update(customer);
+            await db.SaveChangesAsync();
+            return Ok(customer);
         }
         [HttpDelete("{id}")]
         public void DeleteCustomers(long id)

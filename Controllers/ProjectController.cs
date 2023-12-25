@@ -5,6 +5,7 @@ using System.Linq;
 
 namespace looool.Controllers
 {
+    [ApiController]
     [Route("api/[controller]")]
     public class ProjectController : ControllerBase
     {
@@ -26,10 +27,27 @@ namespace looool.Controllers
         [HttpPost]
         public void SaveProject([FromBody] Project project)
         {
-            db.Projects.Add(project);
-            db.SaveChanges();
+            if(project != null)
+            {
+                db.Projects.Add(project);
+                db.SaveChanges();
+            }
         }
         [HttpPut]
+        public async Task<ActionResult<Project>> Put(Project project)
+        {
+            if (project == null)
+            {
+                return BadRequest();
+            }
+            if (!db.Projects.Any(x => x.ProjectId == project.ProjectId))
+            {
+                return NotFound();
+            }
+            db.Update(project);
+            await db.SaveChangesAsync();
+            return Ok(project);
+        }
         public void UpdateProject([FromBody] Project project)
         {
             db.Projects.Update(project);
