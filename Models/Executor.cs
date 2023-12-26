@@ -5,7 +5,7 @@ namespace looool.Models;
 
 public partial class Executor
 {
-    public int ExecutorId { get; set; }
+    public int executor_id { get; set; }
 
     public string? Surname { get; set; }
 

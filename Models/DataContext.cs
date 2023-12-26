@@ -50,11 +50,11 @@ public partial class DataContext : DbContext
 
         modelBuilder.Entity<Executor>(entity =>
         {
-            entity.HasKey(e => e.ExecutorId).HasName("PK__Executor__ED72B2D82AB7C517");
+            entity.HasKey(e => e.executor_id).HasName("PK__Executor__ED72B2D82AB7C517");
 
             entity.ToTable("Executor");
 
-            entity.Property(e => e.ExecutorId)
+            entity.Property(e => e.executor_id)
                 .HasColumnName("executor_id");
             entity.Property(e => e.Email)
                 .HasMaxLength(255)
@@ -108,6 +108,11 @@ public partial class DataContext : DbContext
             entity.Property(e => e.TaskName)
                 .HasMaxLength(255)
                 .HasColumnName("task_name");
+            entity.Property(e => e.TaskNavigationCustomerId)
+                .HasColumnName("TaskNavigationCustomerId");
+            entity.Property(e => e.ExecutorId)
+                            .HasMaxLength(255)
+                            .HasColumnName("executor_id");
         });
 
         OnModelCreatingPartial(modelBuilder);

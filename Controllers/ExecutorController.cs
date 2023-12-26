@@ -22,7 +22,7 @@ namespace looool.Controllers
         [HttpGet("{id}")]
         public Executor GetExecutor(int id)
         {
-            return db.Executors.Where(p => p.ExecutorId == id).FirstOrDefault()!;
+            return db.Executors.Where(p => p.executor_id == id).FirstOrDefault()!;
         }
         [HttpPost]
         public void SaveExecutor([FromBody] Executor executor)
@@ -40,7 +40,7 @@ namespace looool.Controllers
             {
                 return BadRequest();
             }
-            if (!db.Executors.Any(x => x.ExecutorId == executor.ExecutorId))
+            if (!db.Executors.Any(x => x.executor_id == executor.executor_id))
             {
                 return NotFound();
             }
@@ -56,7 +56,7 @@ namespace looool.Controllers
         [HttpDelete("{id}")]
         public void DeleteExecutor(long id)
         {
-            db.Executors.Remove(db.Executors.Where(p => p.ExecutorId == id).FirstOrDefault()!);
+            db.Executors.Remove(db.Executors.Where(p => p.executor_id == id).FirstOrDefault()!);
             db.SaveChanges();
         }
     }
